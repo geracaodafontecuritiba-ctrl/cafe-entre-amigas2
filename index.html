@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Café entre Amigas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: faixa de cabeçalho vinho com flores, cartão de boas-vindas sobreposto, formulário em coluna única, bilhete de confirmação ao final. */
+:root {
+  --bg: #FFF9F0;
+  --surface: #FFFFFF;
+  --ink: #2B1412;
+  --muted: #7A5A52;
+  --line: #F0DCCB;
+  --accent: #C8102E;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #FDECE8;
+  --gold: #D4A017;
+  --gold-ink: #8A6212;
+  --hero-a: #B50D29;
+  --hero-b: #7D0A1C;
+  --hero-ink: #FFF8EC;
+  --petal: #FFD76A;
+  --danger: #B45309;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1E1010; --surface: #2D1A18; --ink: #FBEFE6; --muted: #D8B8AE; --line: #4F2C28;
+    --accent: #FF6B7A; --accent-ink: #3A0A10; --accent-soft: #43211F; --gold: #FFD76A; --gold-ink: #FFD76A;
+    --hero-a: #8E0F25; --hero-b: #560713; --hero-ink: #FFF8EC; --petal: #FFD76A; --danger: #FFB27A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1E1010; --surface: #2D1A18; --ink: #FBEFE6; --muted: #D8B8AE; --line: #4F2C28;
+  --accent: #FF6B7A; --accent-ink: #3A0A10; --accent-soft: #43211F; --gold: #FFD76A; --gold-ink: #FFD76A;
+  --hero-a: #8E0F25; --hero-b: #560713; --hero-ink: #FFF8EC; --petal: #FFD76A; --danger: #FFB27A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+.hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, var(--hero-a), var(--hero-b));
+  color: var(--hero-ink);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding: 48px max(16px, env(safe-area-inset-right, 0px)) 84px max(16px, env(safe-area-inset-left, 0px));
+}
+.hero-in { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+.cup { display: block; color: var(--petal); margin: 0 0 14px; }
+.local {
+  display: flex; gap: 16px; align-items: center; margin: 18px 0; padding: 20px; border-radius: 18px;
+  color: var(--hero-ink); background: linear-gradient(160deg, var(--hero-a), var(--hero-b));
+  border: 2px solid var(--petal); box-shadow: 0 10px 28px rgba(181,13,41,.30), 0 0 0 5px var(--accent-soft);
+}
+.local-pin { flex: none; width: 58px; height: 58px; border-radius: 50%; background: var(--petal); color: var(--hero-b); display: grid; place-items: center; }
+.local-pin svg { width: 30px; height: 30px; }
+.local-txt { min-width: 0; }
+.local .local-k { margin: 0 0 4px; font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--petal); font-weight: 700; }
+.local .local-end { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 6vw, 28px); line-height: 1.15; overflow-wrap: anywhere; }
+.local .local-sub { margin: 6px 0 0; font-weight: 700; letter-spacing: .05em; font-size: 15.5px; overflow-wrap: anywhere; }
+.local .local-data { margin: 8px 0 0; font-size: 14.5px; opacity: .92; }
+@media (max-width: 420px) { .local { flex-direction: column; align-items: flex-start; } }
+@media (prefers-reduced-motion: no-preference) { .local { animation: brilho 2.4s ease-in-out 2; } }
+@keyframes brilho { 50% { box-shadow: 0 10px 28px rgba(181,13,41,.30), 0 0 0 11px var(--accent-soft); } }
+.luzes {
+  position: absolute; left: 0; right: 0; top: 0; height: 14px; pointer-events: none;
+  background:
+    radial-gradient(circle at 10px 7px, var(--petal) 3.5px, transparent 4px) 0 0 / 40px 14px repeat-x,
+    radial-gradient(circle at 30px 7px, #FFF8EC 3px, transparent 3.5px) 0 0 / 40px 14px repeat-x;
+  opacity: .85;
+}
+h1 em { font-style: italic; font-weight: 500; color: var(--petal); }
+.chuva { overflow: hidden; pointer-events: none; z-index: 0; }
+.chuva.pagina { position: fixed; inset: 0; }
+.chuva.topo { position: absolute; inset: 0; }
+.chuva .item { position: absolute; top: 0; opacity: var(--o); animation: cai var(--d) linear infinite; }
+.chuva .item i { display: block; width: 100%; height: 100%; animation: balanca var(--g) ease-in-out infinite alternate; }
+.chuva .item svg { display: block; width: 100%; height: 100%; }
+.pagina .item { color: var(--accent); }
+.pagina .item:nth-child(3n) { color: var(--gold-ink); }
+.topo .item { color: var(--petal); }
+.topo .item:nth-child(3n) { color: var(--hero-ink); }
+@keyframes cai { from { transform: translate3d(0, -80px, 0); } to { transform: translate3d(0, var(--h, 900px), 0); } }
+@keyframes balanca { from { transform: translateX(-16px) rotate(-14deg); } to { transform: translateX(16px) rotate(14deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .chuva .item { animation: none; top: var(--top); }
+  .chuva .item i { animation: none; }
+}
+.rodape {
+  position: relative; z-index: 1; overflow: hidden; text-align: center; color: var(--hero-ink);
+  margin-block: 48px 0;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding: 40px max(16px, env(safe-area-inset-right, 0px)) 34px max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(160deg, var(--hero-a), var(--hero-b));
+}
+.rodape .cup { margin: 0 auto 10px; }
+.rodape .r-t { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1.1; margin: 0 0 4px; }
+.rodape .r-t em { font-style: italic; font-weight: 500; color: var(--petal); }
+.rodape .r-d { margin: 0; font-size: 15px; letter-spacing: .04em; }
+.done .aviso { margin: 18px 0; padding: 20px; border-radius: 18px; background: var(--accent-soft); border: 2px solid var(--gold); }
+.done .aviso .aviso-t { margin: 0 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 21px; color: var(--accent); }
+.done .aviso p { margin: 0 0 10px; }
+.done .aviso .aviso-n { margin: 0 0 14px; font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: .02em; }
+.flor { position: absolute; color: var(--petal); pointer-events: none; }
+.flor.f1 { width: 190px; right: -48px; top: -40px; opacity: .32; transform: rotate(12deg); }
+.flor.f2 { width: 110px; right: 70px; bottom: 6px; opacity: .26; transform: rotate(-20deg); }
+.flor.f3 { width: 80px; left: -26px; bottom: 30px; opacity: .22; }
+.eyebrow { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--petal); font-weight: 700; margin: 0 0 12px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 10vw, 62px); line-height: 1.04; margin: 0 0 22px; text-wrap: balance; }
+.date { display: inline-flex; align-items: baseline; gap: 12px; border-top: 1px solid rgba(252,239,245,.35); padding-top: 14px; }
+.date b { font-family: var(--font-display); font-size: 46px; line-height: 1; font-weight: 700; }
+.date span { font-size: 15px; line-height: 1.3; letter-spacing: .05em; text-transform: uppercase; }
+main { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+.welcome {
+  position: relative; z-index: 2; margin-top: -52px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+  padding: 22px 22px 8px; box-shadow: 0 10px 30px rgba(125,10,28,.14);
+}
+.welcome .lead { font-family: var(--font-display); font-size: 22px; line-height: 1.3; margin: 0 0 14px; color: var(--accent); text-wrap: balance; }
+.welcome p { margin: 0 0 14px; }
+.notice {
+  background: var(--accent-soft); border-left: 4px solid var(--gold);
+  padding: 14px 16px; margin: 4px 0 18px; border-radius: 0 10px 10px 0; font-size: 16px;
+}
+.notice strong { text-transform: uppercase; letter-spacing: .06em; font-size: 13px; display: block; margin-bottom: 2px; color: var(--accent); }
+form { display: block; }
+fieldset { border: 0; margin: 30px 0 0; padding: 0; min-width: 0; }
+legend {
+  font-family: var(--font-display); font-weight: 700; font-size: 23px; padding: 0 0 10px; margin: 0;
+  float: left; width: 100%; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line);
+}
+legend::before { content: ""; width: 16px; height: 16px; background: var(--accent); flex: none; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+legend + * { clear: both; }
+.q { margin: 20px 0 0; min-width: 0; }
+.q > label, .q > .qt { display: block; font-weight: 700; margin-bottom: 8px; }
+.req { color: var(--accent); }
+.opcional { font-weight: 400; color: var(--muted); font-size: 14.5px; }
+input[type="text"], input[type="tel"], textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--surface);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px;
+}
+textarea { min-height: 110px; resize: vertical; }
+input[type="text"]:focus-visible, input[type="tel"]:focus-visible, textarea:focus-visible,
+.opt:has(input:focus-visible), .check:has(input:focus-visible), button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+.opts { display: grid; gap: 8px; }
+.opts.row { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.opt, .check {
+  display: flex; align-items: center; gap: 12px; background: var(--surface);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px; cursor: pointer; font-weight: 600;
+}
+.opt:has(input:checked), .check:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.opt input, .check input { accent-color: var(--accent); width: 20px; height: 20px; flex: none; margin: 0; }
+.check { align-items: flex-start; font-weight: 400; }
+.hint { font-size: 15px; color: var(--muted); margin: 6px 0 0; }
+.important { background: var(--accent-soft); border-radius: 12px; padding: 12px 14px; margin-top: 20px; font-size: 15.5px; }
+.important b { color: var(--accent); }
+.err { color: var(--danger); font-size: 14.5px; font-weight: 600; margin: 6px 0 0; }
+.q.bad input[type="text"], .q.bad input[type="tel"], .q.bad textarea, .q.bad .opt, .q.bad .check { border-color: var(--danger); }
+.q.off { opacity: .45; }
+.q.off .opt, .q.off input, .q.off textarea { cursor: not-allowed; }
+.actions { margin-top: 32px; display: grid; gap: 12px; }
+button.primary {
+  font: inherit; font-weight: 700; font-size: 18px; background: var(--accent); color: var(--accent-ink);
+  border: 0; border-radius: 14px; padding: 16px 20px; cursor: pointer; width: 100%;
+}
+button.primary:disabled { opacity: .6; cursor: default; }
+button.ghost {
+  font: inherit; font-weight: 700; background: transparent; color: var(--accent);
+  border: 1.5px solid var(--accent); border-radius: 12px; padding: 12px 18px; cursor: pointer;
+}
+.done { padding: 28px 0 0; }
+.done h2 { font-family: var(--font-display); font-size: 32px; line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.done p { margin: 0 0 14px; }
+.ticket {
+  background: var(--surface); border: 1.5px dashed var(--accent); border-radius: 16px; padding: 18px 18px 8px; margin: 18px 0;
+  position: relative;
+}
+.ticket .t-head { font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); font-weight: 700; margin: 0 0 10px; }
+.ticket dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 10px; font-size: 16px; }
+.ticket dt { color: var(--muted); }
+.ticket dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.codigo { font-family: var(--font-display); font-size: 26px; letter-spacing: .08em; color: var(--accent); }
+.summary {
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 16px;
+  white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15.5px; margin: 16px 0;
+}
+.btns { display: flex; gap: 10px; flex-wrap: wrap; }
+a.btn {
+  display: inline-block; text-decoration: none; font-weight: 700; background: var(--accent); color: var(--accent-ink);
+  border-radius: 12px; padding: 12px 18px;
+}
+.thanks { margin-top: 28px; padding: 22px 0 0; border-top: 1px solid var(--line); font-family: var(--font-display); font-size: 21px; line-height: 1.4; text-wrap: balance; }
+.org-foot { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); text-align: center; }
+.org-foot button { font: inherit; font-size: 14px; color: var(--muted); background: none; border: 0; cursor: pointer; text-decoration: underline; padding: 6px; }
+.gate { max-width: 360px; margin: 16px auto 0; text-align: left; }
+.gate form { display: grid; gap: 10px; }
+.org { margin-top: 24px; }
+.org h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
+.stats { display: flex; flex-wrap: wrap; gap: 18px 28px; margin: 14px 0; }
+.stats div b { display: block; font-family: var(--font-display); font-size: 34px; line-height: 1; }
+.stats div span { font-size: 14px; color: var(--muted); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 760px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .done { animation: up .4s ease-out; } }
+@keyframes up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="flor" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(0 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g><g transform="rotate(60 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g><g transform="rotate(120 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g><g transform="rotate(180 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g><g transform="rotate(240 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g><g transform="rotate(300 50 50)"><path d="M50 50V8M50 24l-9-8M50 24l9-8M50 36l-6-5M50 36l6-5"/></g></g></symbol>
+    <symbol id="s-xicara" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20h24v7a10 10 0 0 1-10 10h-4A10 10 0 0 1 8 27z"/><path d="M32 23h3a5 5 0 0 1 0 10h-4"/><path d="M6 42h30"/><path d="M14 6c-2 3 2 4 0 8M20 6c-2 3 2 4 0 8M26 6c-2 3 2 4 0 8"/></g></symbol>
+    <symbol id="s-cacau" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22h22v14a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z"/><path d="M32 26h3a5 5 0 0 1 0 10h-3"/><rect x="12" y="15" width="8" height="7" rx="3"/><rect x="21" y="14" width="8" height="8" rx="3"/><path d="M16 3c-2 3 2 3 0 6M24 3c-2 3 2 3 0 6"/></g></symbol>
+    <symbol id="s-biscoito" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 4l5.5 12 13 1.5-9.7 8.8 2.7 12.9L24 32l-11.5 7.2 2.7-12.9L5.5 17.5l13-1.5z" transform="translate(0 3)"/><circle cx="24" cy="22" r="1.2"/><circle cx="19" cy="27" r="1.2"/><circle cx="29" cy="27" r="1.2"/></g></symbol>
+    <symbol id="s-bola" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="29" r="13"/><path d="M20 16h8v-4h-8zM24 12V7"/><path d="M15 28c2-4 6-6 10-6"/></g></symbol>
+    <symbol id="s-estrela" viewBox="0 0 48 48"><path fill="currentColor" d="M24 4c1 10 4 13 14 14-10 1-13 4-14 14-1-10-4-13-14-14 10-1 13-4 14-14z"/></symbol>
+  </defs>
+</svg>
+<div class="chuva pagina" aria-hidden="true"></div>
+
+<header class="hero">
+  <div class="luzes" aria-hidden="true"></div>
+  <div class="chuva topo" aria-hidden="true"></div>
+  <svg class="flor f1" viewBox="0 0 100 100" aria-hidden="true"><use href="#flor"/></svg>
+  <svg class="flor f2" viewBox="0 0 100 100" aria-hidden="true"><use href="#flor"/></svg>
+  <svg class="flor f3" viewBox="0 0 100 100" aria-hidden="true"><use href="#flor"/></svg>
+  <div class="hero-in">
+    <svg class="cup" viewBox="0 0 64 64" width="46" height="46" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 26h34v10a14 14 0 0 1-14 14h-6A14 14 0 0 1 10 36z"/><path d="M44 30h4a6 6 0 0 1 0 12h-5"/><path d="M8 56h40"/><path d="M20 8c-3 4 3 6 0 10M30 8c-3 4 3 6 0 10M40 8c-3 4 3 6 0 10"/></svg>
+    <p class="eyebrow">Confirmação de presença</p>
+    <h1>Café <em>entre</em> Amigas</h1>
+    <div class="date"><b>28</b><span>novembro<br>de 2026</span></div>
+  </div>
+</header>
+
+<main>
+  <section class="welcome" id="intro">
+    <p class="lead">Você é querida, esperada e muito amada. Este dia foi preparado pensando em você.</p>
+    <p>Será um prazer ter você conosco neste dia tão especial!</p>
+    <p>Teremos um momento preparado com muito carinho, para estarmos juntas na presença de Deus, em um tempo de louvor, adoração, comunhão e conversas entre amigas.</p>
+    <p>Será uma oportunidade de compartilhar momentos, fortalecer laços e viver uma experiência abençoada na presença do Senhor.</p>
+    <p>Sua presença é muito importante para nós! Por isso, pedimos que preencha este formulário e confirme sua participação.</p>
+    <div class="notice"><strong>Atenção</strong>As vagas são limitadas e a confirmação de presença é indispensável para nossa organização. Cada convidado também deverá realizar sua confirmação individualmente, por meio deste mesmo formulário.</div>
+  </section>
+
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>1. Identificação</legend>
+      <div class="q" data-q="nome">
+        <label for="nome">Nome e sobrenome <span class="req">*</span></label>
+        <input type="text" id="nome" name="nome" autocomplete="name" maxlength="120">
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="zap">
+        <label for="zap">WhatsApp para contato <span class="req">*</span></label>
+        <input type="tel" id="zap" name="zap" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(00) 00000-0000">
+        <p class="hint">Usaremos apenas para avisos sobre o encontro.</p>
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="presenca">
+        <span class="qt" id="l-presenca">Você confirma sua presença? <span class="req">*</span></span>
+        <div class="opts" role="radiogroup" aria-labelledby="l-presenca">
+          <label class="opt"><input type="radio" name="presenca" value="Sim"> Sim, estarei presente!</label>
+          <label class="opt"><input type="radio" name="presenca" value="Não"> Não poderei participar.</label>
+        </div>
+        <p class="hint" id="avisoNao" hidden>Tudo bem! Não precisa responder mais nada. É só tocar em "Enviar resposta".</p>
+        <p class="err" hidden></p>
+      </div>
+    </fieldset>
+
+    <div id="resto">
+    <fieldset>
+      <legend>2. Convidados</legend>
+      <div class="q" data-q="leva">
+        <span class="qt" id="l-leva">Você pretende levar algum convidado? <span class="req">*</span></span>
+        <div class="opts row" role="radiogroup" aria-labelledby="l-leva">
+          <label class="opt"><input type="radio" name="leva" value="Sim"> Sim.</label>
+          <label class="opt"><input type="radio" name="leva" value="Não"> Não.</label>
+        </div>
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="qtd">
+        <span class="qt" id="l-qtd">Quantos convidados pretende levar? <span class="req">*</span></span>
+        <div class="opts row" role="radiogroup" aria-labelledby="l-qtd">
+          <label class="opt"><input type="radio" name="qtd" value="1"> 1</label>
+          <label class="opt"><input type="radio" name="qtd" value="2"> 2</label>
+          <label class="opt"><input type="radio" name="qtd" value="3"> 3</label>
+          <label class="opt"><input type="radio" name="qtd" value="4 ou mais"> 4 ou mais.</label>
+        </div>
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="nomesConv">
+        <label for="nomesConv">Nome e sobrenome dos convidados <span class="req">*</span></label>
+        <textarea id="nomesConv" name="nomesConv" maxlength="800"></textarea>
+        <p class="hint">Escreva um nome por linha.</p>
+        <p class="err" hidden></p>
+      </div>
+      <div class="important"><b>Importante:</b> cada convidado deverá preencher individualmente este formulário, informando o nome da pessoa que o convidou. A confirmação individual é indispensável para o controle das vagas.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3. Identificação do convidado</legend>
+      <div class="q" data-q="convidada">
+        <span class="qt" id="l-convidada">Você está participando como convidado de alguém? <span class="req">*</span></span>
+        <div class="opts row" role="radiogroup" aria-labelledby="l-convidada">
+          <label class="opt"><input type="radio" name="convidada" value="Sim"> Sim.</label>
+          <label class="opt"><input type="radio" name="convidada" value="Não"> Não.</label>
+        </div>
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="quem">
+        <label for="quem">Se sim, informe o nome e sobrenome de quem convidou você <span class="req">*</span></label>
+        <input type="text" id="quem" name="quem" maxlength="120">
+        <p class="err" hidden></p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>4. Autorização de imagem</legend>
+      <div class="q" data-q="imagem">
+        <span class="qt" id="l-imagem">Você autoriza o uso de sua imagem em fotos e vídeos realizados durante o encontro, para registros e divulgações da igreja? <span class="req">*</span></span>
+        <div class="opts row" role="radiogroup" aria-labelledby="l-imagem">
+          <label class="opt"><input type="radio" name="imagem" value="Sim"> Sim.</label>
+          <label class="opt"><input type="radio" name="imagem" value="Não"> Não.</label>
+        </div>
+        <p class="err" hidden></p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>5. Confirmação</legend>
+      <div class="q" data-q="expectativa">
+        <label for="expectativa">Qual é a sua expectativa para este encontro? <span class="opcional">(opcional)</span></label>
+        <textarea id="expectativa" name="expectativa" maxlength="500" placeholder="O que você espera viver neste dia?"></textarea>
+        <p class="err" hidden></p>
+      </div>
+      <div class="q" data-q="ciente">
+        <span class="qt">Confirmação de compromisso <span class="req">*</span></span>
+        <label class="check"><input type="checkbox" id="ciente" name="ciente"> <span>Estou ciente de que minha confirmação é importante para a organização do encontro e para a reserva da minha vaga.</span></label>
+        <p class="err" hidden></p>
+      </div>
+    </fieldset>
+
+    </div>
+
+    <div class="actions">
+      <p class="err" id="subErr" role="alert" hidden></p>
+      <button type="submit" class="primary" id="enviar">Enviar confirmação</button>
+    </div>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <h2 id="doneTitle">Confirmação recebida!</h2>
+    <p id="doneText"></p>
+    <aside class="aviso" id="avisoVaga" hidden aria-label="Contato da organização">
+      <p class="aviso-t">Se algo mudar</p>
+      <p>Entre em contato <b>imediatamente</b> com o número abaixo para verificar se ainda há vaga.</p>
+      <p class="aviso-n">(41) 99616-4806</p>
+      <a class="btn" href="https://wa.me/5541996164806" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </aside>
+    <aside class="local" id="local" hidden aria-label="Local do encontro">
+      <div class="local-pin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+      <div class="local-txt">
+        <p class="local-k">Anote o local</p>
+        <p class="local-end">AVENIDA IGUAÇU, 3053</p>
+        <p class="local-sub">EDIFÍCIO ANTUÉRPIA · SALÃO DE FESTA</p>
+        <p class="local-data">Será no <b>sábado</b>, 28 de novembro de 2026</p>
+      </div>
+    </aside>
+    <div class="ticket" id="ticket">
+      <p class="t-head">Café entre Amigas · 28/11/2026</p>
+      <dl>
+        <dt>Nome</dt><dd id="tkNome"></dd>
+        <dt>Resposta</dt><dd id="tkPres"></dd>
+        <dt>Enviada em</dt><dd id="tkData"></dd>
+        <dt>Código</dt><dd class="codigo" id="tkCod"></dd>
+      </dl>
+    </div>
+    <div id="fallback" hidden>
+      <p><b>Falta um passo:</b> para sua resposta chegar até a organização, toque em um dos botões abaixo.</p>
+      <div class="summary" id="summary"></div>
+      <div class="btns">
+        <a class="btn" id="wa" href="#" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
+        <button type="button" class="ghost" id="copy">Copiar resumo</button>
+      </div>
+      <p class="hint" id="copyMsg" role="status"></p>
+      <p class="hint" id="erroCod"></p>
+    </div>
+    <p class="thanks" id="thanksSim">Agradecemos por confirmar sua presença! Estamos preparando tudo com muito carinho para receber você. Que seja um dia especial e abençoado para todas nós! ❤️</p>
+    <p class="thanks" id="thanksNao" hidden>Obrigada por nos avisar. Que Deus abençoe você e todos os seus! ❤️</p>
+  </section>
+
+  <div class="org-foot">
+    <button type="button" id="orgOpen">Área da organização</button>
+    <div class="gate" id="gate" hidden>
+      <form id="gateForm" novalidate>
+        <label for="senha" class="hint">Digite a senha para continuar.</label>
+        <input type="text" id="senha" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <p class="err" id="gateErr" hidden></p>
+        <button type="submit" class="ghost">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="org" id="org" hidden>
+    <h2>Respostas recebidas</h2>
+    <p class="hint" id="orgNote"></p>
+    <div class="stats">
+      <div><b id="sConf">0</b><span>confirmadas</span></div>
+      <div><b id="sNao">0</b><span>não poderão ir</span></div>
+      <div><b id="sConv">0</b><span>convidados informados</span></div>
+      <div><b id="sTot">0</b><span>pessoas esperadas</span></div>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Enviada em</th><th>Nome</th><th>WhatsApp</th><th>Presença</th><th>Convidados</th><th>Convidada de</th><th>Imagem</th><th>Expectativa</th><th>Código</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <button type="button" class="ghost" id="orgSair" style="margin-top:16px">Sair da área da organização</button>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="luzes" aria-hidden="true"></div>
+  <svg class="cup" viewBox="0 0 64 64" width="42" height="42" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 26h34v10a14 14 0 0 1-14 14h-6A14 14 0 0 1 10 36z"/><path d="M44 30h4a6 6 0 0 1 0 12h-5"/><path d="M8 56h40"/><path d="M20 8c-3 4 3 6 0 10M30 8c-3 4 3 6 0 10M40 8c-3 4 3 6 0 10"/></svg>
+  <p class="r-t">Café <em>entre</em> Amigas</p>
+  <p class="r-d">28 de novembro de 2026<br>Com carinho, para você</p>
+</footer>
+
+<script>
+(function () {
+  /* Cole aqui o endereço que o Google gerou (termina em /exec), entre as aspas. */
+  var API = "https://script.google.com/macros/s/AKfycbxFTO05VAZdVJcPsfmQS6Hadk3YAsQ-KUi15WDW-raMOMZiE0C7K03FXoi-DjKTT9kxCw/exec";
+
+  var $ = function (s) { return document.querySelector(s); };
+  var f = $("#f");
+  var attending = "", senhaAdm = "", timer = null;
+
+  function val(name) { var c = f.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : ""; }
+  function show(el, on) { el.hidden = !on; }
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+  function clear(q) { q.classList.remove("bad"); var m = q.querySelector(".err"); if (m) m.hidden = true; }
+  function fail(key, msg, list) {
+    var q = f.querySelector('[data-q="' + key + '"]'); if (!q) return;
+    q.classList.add("bad");
+    var m = q.querySelector(".err"); m.textContent = msg; m.hidden = false;
+    list.push(q);
+  }
+  function lock(key, on) {
+    var q = f.querySelector('[data-q="' + key + '"]'); if (!q) return;
+    q.classList.toggle("off", on);
+    q.querySelectorAll("input,textarea").forEach(function (i) {
+      i.disabled = on;
+      if (on) { if (i.type === "radio" || i.type === "checkbox") i.checked = false; else i.value = ""; }
+    });
+    if (on) clear(q);
+  }
+  function sync() {
+    attending = val("presenca");
+    var nao = attending === "Não", resto = $("#resto");
+    resto.hidden = nao;
+    $("#avisoNao").hidden = !nao;
+    resto.querySelectorAll("input,textarea").forEach(function (i) {
+      i.disabled = nao;
+      if (nao) { if (i.type === "radio" || i.type === "checkbox") i.checked = false; else i.value = ""; }
+    });
+    if (nao) resto.querySelectorAll(".q.bad").forEach(clear);
+    lock("qtd", val("leva") === "Não");
+    lock("nomesConv", val("leva") === "Não");
+    lock("quem", val("convidada") === "Não");
+    $("#enviar").textContent = nao ? "Enviar resposta" : "Enviar confirmação";
+  }
+  f.addEventListener("change", function (e) { sync(); var q = e.target.closest(".q"); if (q) clear(q); });
+  f.addEventListener("input", function (e) { var q = e.target.closest(".q"); if (q) clear(q); });
+
+  function validate() {
+    var bad = [];
+    f.querySelectorAll(".q.bad").forEach(clear);
+    var nome = $("#nome").value.trim();
+    if (!nome) fail("nome", "Escreva seu nome e sobrenome.", bad);
+    else if (nome.split(/\s+/).length < 2) fail("nome", "Escreva nome e sobrenome.", bad);
+    var zap = $("#zap").value.replace(/\D/g, "");
+    if (!zap) fail("zap", "Informe seu WhatsApp com DDD.", bad);
+    else if (zap.length < 10 || zap.length > 13) fail("zap", "Confira o número: use o DDD e o número completo.", bad);
+    if (!attending) fail("presenca", "Escolha uma opção.", bad);
+    if (attending === "Sim") {
+      if (!val("leva")) fail("leva", "Escolha uma opção.", bad);
+      if (val("leva") === "Sim") {
+        if (!val("qtd")) fail("qtd", "Informe quantos convidados.", bad);
+        if (!$("#nomesConv").value.trim()) fail("nomesConv", "Escreva o nome e sobrenome dos convidados.", bad);
+      }
+      if (!val("convidada")) fail("convidada", "Escolha uma opção.", bad);
+      if (val("convidada") === "Sim" && !$("#quem").value.trim()) fail("quem", "Informe quem convidou você.", bad);
+      if (!val("imagem")) fail("imagem", "Escolha uma opção.", bad);
+      if (!$("#ciente").checked) fail("ciente", "Marque a caixa para confirmar.", bad);
+    }
+    return bad;
+  }
+
+  function collect() {
+    var leva = val("leva"), conv = val("convidada");
+    return {
+      nome: $("#nome").value.trim(),
+      whatsapp: $("#zap").value.trim(),
+      presenca: attending,
+      levaConvidados: leva,
+      qtdConvidados: leva === "Não" ? "" : val("qtd"),
+      nomesConvidados: leva === "Não" ? "" : $("#nomesConv").value.trim(),
+      convidadaDeAlguem: conv,
+      quemConvidou: conv === "Não" ? "" : $("#quem").value.trim(),
+      autorizaImagem: val("imagem"),
+      expectativa: $("#expectativa").value.trim(),
+      ciente: $("#ciente").checked
+    };
+  }
+
+  function showDone(d) {
+    show(f, false); show($("#intro"), false); show($("#done"), true);
+    var yes = d.presenca === "Sim", first = d.nome.split(/\s+/)[0];
+    $("#doneTitle").textContent = yes ? "Presença confirmada, " + first + "!" : "Que pena, " + first + "!";
+    $("#doneText").textContent = yes
+      ? "Sua vaga está registrada para o encontro do dia 28 de novembro."
+      : "Lamentamos muito que você não possa estar conosco neste dia. Vamos sentir a sua falta, e sua resposta já está registrada.";
+    show($("#local"), yes);
+    show($("#avisoVaga"), !yes);
+    show($("#thanksSim"), yes);
+    show($("#thanksNao"), !yes);
+    $("#tkNome").textContent = d.nome;
+    $("#tkPres").textContent = yes ? "Presença confirmada" : "Não poderá participar";
+    $("#tkData").textContent = d.criadoEm;
+    $("#tkCod").textContent = d.codigo;
+    window.scrollTo(0, 0);
+  }
+
+  function temServidor() { return API.indexOf("https://") === 0; }
+
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var bad = validate();
+    if (bad.length) { bad[0].scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    var d = collect(), btn = $("#enviar"), err = $("#subErr");
+    err.hidden = true;
+    function volta(m) { btn.disabled = false; sync(); err.textContent = m; err.hidden = false; }
+    if (!temServidor()) { volta("O envio ainda não foi configurado. Avise a organização."); return; }
+    btn.disabled = true; btn.textContent = "Enviando...";
+    function concluir(r) { d.codigo = r.codigo; d.criadoEm = r.enviadaEm; showDone(d); }
+    function verificar() {
+      var zap = d.whatsapp.replace(/\D/g, "");
+      fetch(API + "?checar=" + encodeURIComponent(d.nome) + "&zap=" + encodeURIComponent(zap))
+        .then(function (r) { return r.json(); })
+        .then(function (r) {
+          if (r && r.existe) concluir(r);
+          else volta("Não foi possível enviar agora. Confira sua internet e toque em enviar novamente.");
+        })
+        .catch(function () { volta("Não foi possível enviar agora. Confira sua internet e toque em enviar novamente."); });
+    }
+    fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(d) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r && r.ok) { concluir(r); return; }
+        volta(r && r.erro === "duplicado"
+          ? "Já recebemos uma confirmação com este nome. Se precisar mudar algo, fale com a organização."
+          : "Não foi possível registrar sua resposta. Confira os dados e tente de novo.");
+      })
+      .catch(verificar);
+  });
+
+  /* Área da organização: senha conferida no servidor, lista atualizada sozinha. */
+  function render(r) {
+    var lista = r.lista || [], conf = 0, nao = 0, conv = 0, html = "";
+    for (var i = lista.length - 1; i >= 0; i--) {
+      var x = lista[i];
+      if (x.presenca === "Sim") conf++; else nao++;
+      var n = x.qtdConvidados === "4 ou mais." || x.qtdConvidados === "4 ou mais" ? 4 : parseInt(x.qtdConvidados || "0", 10) || 0;
+      conv += n;
+      html += "<tr><td>" + esc(x.enviadaEm) + "</td><td>" + esc(x.nome) + "</td><td>" + esc(x.whatsapp) + "</td><td>" + esc(x.presenca) + "</td><td>" +
+        (n ? esc(x.qtdConvidados) + "<br>" + esc((x.nomesConvidados || "").replace(/\n+/g, ", ")) : "") +
+        "</td><td>" + esc(x.quemConvidou) + "</td><td>" + esc(x.autorizaImagem) + "</td><td>" + esc(x.expectativa) + "</td><td>" + esc(x.codigo) + "</td></tr>";
+    }
+    $("#sConf").textContent = conf; $("#sNao").textContent = nao; $("#sConv").textContent = conv; $("#sTot").textContent = conf + conv;
+    $("#rows").innerHTML = html || '<tr><td colspan="9">Nenhuma resposta ainda.</td></tr>';
+    var h = new Date();
+    $("#orgNote").textContent = "Atualiza sozinho a cada poucos segundos. Última atualização: " + h.toLocaleTimeString("pt-BR") + ".";
+  }
+  function buscar() {
+    if (!temServidor() || !senhaAdm) return;
+    fetch(API + "?senha=" + encodeURIComponent(senhaAdm)).then(function (r) { return r.json(); })
+      .then(function (r) { if (r && r.ok) render(r); }).catch(function () {});
+  }
+  $("#orgOpen").addEventListener("click", function () { show($("#gate"), $("#gate").hidden); if (!$("#gate").hidden) $("#senha").focus(); });
+  $("#gateForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("#gateErr"), s = $("#senha").value;
+    err.hidden = true;
+    if (!temServidor()) { err.textContent = "O envio ainda não foi configurado."; err.hidden = false; return; }
+    fetch(API + "?senha=" + encodeURIComponent(s)).then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r && r.ok) {
+          senhaAdm = s; $("#senha").value = "";
+          show($("#gate"), false); show($("#orgOpen"), false); show($("#org"), true);
+          render(r);
+          if (!timer) timer = setInterval(function () { if (!document.hidden) buscar(); }, 6000);
+          $("#org").scrollIntoView({ behavior: "smooth" });
+        } else { err.textContent = "Senha incorreta."; err.hidden = false; }
+      })
+      .catch(function () { err.textContent = "Não foi possível verificar agora. Tente de novo."; err.hidden = false; });
+  });
+  $("#orgSair").addEventListener("click", function () {
+    clearInterval(timer); timer = null; senhaAdm = "";
+    show($("#org"), false); show($("#orgOpen"), true);
+  });
+
+  function decorar() {
+    var tipos = ["flor", "s-xicara", "s-cacau", "s-biscoito", "s-bola", "s-estrela"];
+    var camadas = [];
+    function encher(el, n, min, max, oMin, oMax) {
+      for (var i = 0; i < n; i++) {
+        var t = tipos[i % tipos.length];
+        var s = Math.round(min + Math.random() * (max - min));
+        var d = 16 + Math.random() * 16;
+        var it = document.createElement("div");
+        it.className = "item";
+        it.style.cssText = "left:" + (Math.random() * 94).toFixed(1) + "%;width:" + s + "px;height:" + s +
+          "px;--o:" + (oMin + Math.random() * (oMax - oMin)).toFixed(2) + ";--d:" + d.toFixed(1) +
+          "s;--g:" + (3 + Math.random() * 3).toFixed(1) + "s;--top:" + (Math.random() * 90).toFixed(0) +
+          "%;animation-delay:-" + (Math.random() * d).toFixed(1) + "s";
+        it.innerHTML = '<i><svg width="100%" height="100%" aria-hidden="true"><use href="#' + t + '"/></svg></i>';
+        el.appendChild(it);
+      }
+      camadas.push(el);
+    }
+    function medir() {
+      camadas.forEach(function (l) { l.style.setProperty("--h", (l.clientHeight + 90) + "px"); });
+    }
+    var pg = document.querySelector(".chuva.pagina"), tp = document.querySelector(".chuva.topo");
+    if (pg) encher(pg, 22, 30, 54, 0.26, 0.42);
+    if (tp) encher(tp, 14, 22, 40, 0.4, 0.7);
+    medir();
+    window.addEventListener("resize", medir);
+  }
+  decorar();
+  sync();
+})();
+</script>
+</body>
+</html>
